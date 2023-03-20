@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RC Kanashii&#39;s Blog</title>
+    <link>https://rc-kanashii.top/</link>
+    <description>Recent content on RC Kanashii&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Thu, 16 Mar 2023 11:33:45 +0800</lastBuildDate><atom:link href="https://rc-kanashii.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>换博客了</title>
+      <link>https://rc-kanashii.top/posts/%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%BA%86/</link>
+      <pubDate>Thu, 16 Mar 2023 11:33:45 +0800</pubDate>
+      
+      <guid>https://rc-kanashii.top/posts/%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%BA%86/</guid>
+      <description>大三疫情的时候闲来无事，用Hexo搭了个博客。花了两三天折腾各种配置，结果发现搭完后才写了两篇test就再也没动过了TAT 后来换了台主机，之</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://rc-kanashii.top/about/</link>
+      <pubDate>Thu, 16 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://rc-kanashii.top/about/</guid>
+      <description>RC Kanashii 的个人网站</description>
+    </item>
+    
+    <item>
+      <title>测试</title>
+      <link>https://rc-kanashii.top/posts/%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Thu, 16 Mar 2023 00:21:14 +0800</pubDate>
+      
+      <guid>https://rc-kanashii.top/posts/%E6%B5%8B%E8%AF%95/</guid>
+      <description>1 Hello, world! 1.1 asdfghjkl</description>
+    </item>
+    
+  </channel>
+</rss>

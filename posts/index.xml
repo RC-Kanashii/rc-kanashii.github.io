@@ -1,0 +1,42 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Posts on RC Kanashii&#39;s Blog</title>
+		<link>https://rc-kanashii.top/posts/</link>
+		<description>Recent content in Posts on RC Kanashii&#39;s Blog</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>zh-CN</language>
+		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+		<lastBuildDate>Thu, 16 Mar 2023 11:33:45 +0800</lastBuildDate>
+		<atom:link href="https://rc-kanashii.top/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>换博客了</title>
+			<link>https://rc-kanashii.top/posts/%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%BA%86/</link>
+			<pubDate>Thu, 16 Mar 2023 11:33:45 +0800</pubDate>
+			
+			<guid>https://rc-kanashii.top/posts/%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%BA%86/</guid>
+			<description>大三疫情的时候闲来无事，用Hexo搭了个博客。花了两三天折腾各种配置，结果发现搭完后才写了两篇test就再也没动过了TAT 后来换了台主机，之</description>
+			<content type="html"><![CDATA[<p>大三疫情的时候闲来无事，用Hexo搭了个博客。花了两三天折腾各种配置，结果发现搭完后才写了两篇test就再也没动过了TAT</p>
+<p>后来换了台主机，之前的源码也没有备份，博客就彻底废掉了……</p>
+<p>昨天又心血来潮，用Hugo再搭个博客玩玩。事实证明Hugo不愧是用Go写的，搭建简单，支持热更新，比Hexo不知道快到哪里去了。</p>
+<p>我发现可能大多数人搭博客之前都想先挑一个好看的主题，一不小心就把hugo的主题都翻完了，蹉跎掉2个小时，最后选了Hermit。</p>
+<p>Hermit真的太戳我心了!缺点就是作者似乎已经放弃维护了，Github上都快三年没更新了，一堆issues没有解决。配置的时候发现Tags页面没有单独做样式，不太符合我的审美。等我先把前端学会，把Hugo文档看一看，再回来改改样式吧。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>测试</title>
+			<link>https://rc-kanashii.top/posts/%E6%B5%8B%E8%AF%95/</link>
+			<pubDate>Thu, 16 Mar 2023 00:21:14 +0800</pubDate>
+			
+			<guid>https://rc-kanashii.top/posts/%E6%B5%8B%E8%AF%95/</guid>
+			<description>1 Hello, world! 1.1 asdfghjkl</description>
+			<content type="html"><![CDATA[<h1 id="1">1</h1>
+<p>Hello, world!</p>
+<h2 id="11">1.1</h2>
+<p>asdfghjkl</p>
+]]></content>
+		</item>
+		
+	</channel>
+</rss>
