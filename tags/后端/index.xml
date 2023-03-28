@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>后端 on RC Kanashii&#39;s Blog</title>
+    <link>https://rc-kanashii.top/tags/%E5%90%8E%E7%AB%AF/</link>
+    <description>Recent content in 后端 on RC Kanashii&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Wed, 29 Mar 2023 00:14:40 +0800</lastBuildDate><atom:link href="https://rc-kanashii.top/tags/%E5%90%8E%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required</title>
+      <link>https://rc-kanashii.top/posts/%E8%8F%9C%E9%B8%A1mybatis-plus%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Wed, 29 Mar 2023 00:14:40 +0800</pubDate>
+      
+      <guid>https://rc-kanashii.top/posts/%E8%8F%9C%E9%B8%A1mybatis-plus%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+      <description>前言 最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了官网首页的这一串依赖： &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.baomidou&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;mybatis-plus&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.5.2&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 然后简简单单弄个</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required">
+<meta itemprop="description" content="前言 最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了官网首页的这一串依赖： &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus&lt;/artifactId&gt; &lt;version&gt;3.5.2&lt;/version&gt; &lt;/dependency&gt; 然后简简单单弄个"><meta itemprop="datePublished" content="2023-03-29T00:14:40+08:00" />
+<meta itemprop="dateModified" content="2023-03-29T00:14:40+08:00" />
+<meta itemprop="wordCount" content="1118">
+<meta itemprop="keywords" content="后端," /><meta property="og:title" content="菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required" />
+<meta property="og:description" content="前言 最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了官网首页的这一串依赖： &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus&lt;/artifactId&gt; &lt;version&gt;3.5.2&lt;/version&gt; &lt;/dependency&gt; 然后简简单单弄个" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rc-kanashii.top/posts/%E8%8F%9C%E9%B8%A1mybatis-plus%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-29T00:14:40+08:00" />
+<meta property="article:modified_time" content="2023-03-29T00:14:40+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required"/>
+<meta name="twitter:description" content="前言 最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了官网首页的这一串依赖： &lt;dependency&gt; &lt;groupId&gt;com.baomidou&lt;/groupId&gt; &lt;artifactId&gt;mybatis-plus&lt;/artifactId&gt; &lt;version&gt;3.5.2&lt;/version&gt; &lt;/dependency&gt; 然后简简单单弄个"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required</title>
+	<link rel="stylesheet" href="https://rc-kanashii.top/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://rc-kanashii.top">RC Kanashii&#39;s Blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://rc-kanashii.top/posts/">Posts</a>
+				<a href="https://rc-kanashii.top/tags/">Tags</a>
+				<a href="https://rc-kanashii.top/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="Table of Contents"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><span class="hdr-social hide-in-mobile"><a href="https://github.com/RC-Kanashii" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://stackoverflow.com/users/16936332/rc-kanashii" target="_blank" rel="noopener me" title="Stackoverflow"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.913 16.041v6.848h17.599v-6.848M7.16 18.696h8.925M7.65 13.937l8.675 1.8M9.214 9.124l8.058 3.758M12.086 4.65l6.849 5.66M15.774 1.111l5.313 7.162"/></svg></a><a href="https://www.zhihu.com/people/rc-kanashii" target="_blank" rel="noopener me" title="Zhihu"><svg t="1678936901898" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+  p-id="12192" class="feather feather-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path
+    d="M505.173333 491.52h-165.546666V238.933333h146.773333c23.893333 0 42.666667-18.773333 42.666667-42.666666S510.293333 153.6 486.4 153.6H204.8c6.826667-32.426667 10.24-59.733333 11.946667-83.626667v-3.413333c0-6.826667 1.706667-13.653333 1.706666-18.773333 1.706667-11.946667-1.706667-22.186667-8.533333-32.426667-6.826667-8.533333-17.066667-15.36-29.013333-15.36-11.946667-1.706667-23.893333 1.706667-32.426667 10.24-8.533333 6.826667-15.36 17.066667-15.36 29.013333 0 6.826667-1.706667 15.36-1.706667 23.893334C124.586667 126.293333 119.466667 204.8 15.36 298.666667c-8.533333 8.533333-13.653333 18.773333-13.653333 30.72s3.413333 22.186667 11.946666 30.72c8.533333 8.533333 20.48 13.653333 32.426667 13.653333 10.24 0 20.48-3.413333 29.013333-11.946667 44.373333-39.253333 76.8-80.213333 98.986667-124.586666h78.506667v252.586666H54.613333c-23.893333 0-42.666667 18.773333-42.666666 42.666667s18.773333 42.666667 42.666666 42.666667h196.266667c-8.533333 126.293333-52.906667 283.306667-215.04 363.52-10.24 8.533333-18.773333 17.066667-22.186667 29.013333-3.413333 10.24-1.706667 22.186667 3.413334 32.426667 6.826667 15.36 22.186667 23.893333 37.546666 23.893333 6.826667 0 13.653333-1.706667 18.773334-5.12 117.76-58.026667 197.973333-155.306667 237.226666-283.306667 1.706667 6.826667 5.12 11.946667 8.533334 17.066667l136.533333 162.133333c8.533333 10.24 20.48 15.36 34.133333 15.36 10.24 0 20.48-3.413333 27.306667-10.24 8.533333-6.826667 15.36-17.066667 15.36-29.013333 1.706667-11.946667-1.706667-22.186667-10.24-32.426667l-136.533333-162.133333c-15.36-18.773333-42.666667-20.48-61.44-5.12l-3.413334 3.413333c8.533333-37.546667 13.653333-76.8 15.36-117.76h167.253334c23.893333 0 42.666667-18.773333 42.666666-42.666666 3.413333-22.186667-17.066667-42.666667-40.96-42.666667zM979.626667 143.36H641.706667C616.106667 143.36 597.333333 163.84 597.333333 187.733333v626.346667c0 23.893333 18.773333 42.666667 42.666667 42.666667H665.6l5.12 105.813333v1.706667c1.706667 15.36 11.946667 29.013333 25.6 35.84 5.12 1.706667 10.24 3.413333 17.066667 3.413333 10.24 0 18.773333-3.413333 27.306666-8.533333h1.706667l136.533333-134.826667h98.986667c11.946667 0 22.186667-5.12 30.72-11.946667 8.533333-8.533333 13.653333-18.773333 13.653333-30.72V187.733333c0-23.893333-18.773333-44.373333-42.666666-44.373333z m-273.066667 626.346667h-22.186667V230.4h252.586667v539.306667h-73.386667c-10.24 0-18.773333 3.413333-27.306666 8.533333l-1.706667 1.706667-83.626667 85.333333-3.413333-56.32v-1.706667c0-20.48-18.773333-37.546667-40.96-37.546666z"
+    p-id="12193" fill="#e0e6eb"></path>
+</svg></a><a href="mailto:yi.chen.01@outlook.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://rc-kanashii.top/posts/">Posts</a></li>
+			<li><a href="https://rc-kanashii.top/tags/">Tags</a></li>
+			<li><a href="https://rc-kanashii.top/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Mar 29, 2023</span></div>
+				<h1>菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required</h1>
+			</header>
+			<div class="content">
+				<h2 id="前言">前言<a href="#前言" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了<strong>官网首页</strong>的这一串依赖：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.baomidou<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis-plus<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>然后简简单单弄个User的entity：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Data</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@TableId</span><span class="o">(</span><span class="n">type</span> <span class="o">=</span> <span class="n">IdType</span><span class="o">.</span><span class="na">AUTO</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Long</span> <span class="n">id</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">username</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">password</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>弄个最简单的UserMapper：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserMapper</span> <span class="kd">extends</span> <span class="n">BaseMapper</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>再弄个简单到不行的LoginController：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RestController</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/login&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginController</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">UserMapper</span> <span class="n">userMapper</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@GetMapping</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">User</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="n">userMapper</span><span class="o">.</span><span class="na">selectById</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>结果一运行，报了一个之前从未见过的错误：</p>
+<pre tabindex="0"><code>org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;loginController&#39;: Unsatisfied dependency expressed through field &#39;userMapper&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;userMapper&#39; defined in file [C:\JetBrainsProjects\IdeaProjects\springboot-vue-demo\target\classes\com\rc\springbootvuedemo\mapper\UserMapper.class]: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:660) ~[spring-beans-5.3.24.jar:5.3.24]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:640) ~[spring-beans-5.3.24.jar:5.3.24]
+	...
+</code></pre><p>重点是这一句：</p>
+<pre tabindex="0"><code>Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required
+</code></pre><p>我就纳闷了，之前MyBatis Plus用得好好地，怎么今天突然就报错了？</p>
+<h2 id="所用依赖包">所用依赖包<a href="#所用依赖包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>我这个项目毕竟只是个demo，使用的依赖包并不多：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-devtools<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- MySQL --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-data-jpa<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>mysql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mysql-connector-java<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- MyBatis Plus --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.baomidou<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis-plus<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- Lombok --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.projectlombok<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>lombok<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>另外，根据官网文档的提示，我并没有额外引入MyBatis。</p>
+<blockquote>
+<p>注意：引入MyBatis-Plus之后请不要再次引入MyBatis以及MyBatis-Spring，以避免因版本差异导致的问题。</p>
+</blockquote>
+<h2 id="尝试解决">尝试解决<a href="#尝试解决" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>网上很多文章说原因是MyBatis Plus版本过高，但是降级对我而言没有作用。</p>
+<p>有的文章说是因为MyBatis Plus使用的是MybatisSqlSessionFactoryBean而非SqlSessionFactory，所以要自己配置前者，而且配置方法贼复杂。但是我印象里之前写项目的时候从来没有这么麻烦过，于是pass掉这个解决方法。</p>
+<h2 id="最终解决方法">最终解决方法<a href="#最终解决方法" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在网上浪费了2个小时之后，我又仔细阅读了一遍官方文档，结果发现<strong>官方首页</strong>和<strong>快速入门-&gt;安装</strong>中的依赖包<strong>不一致</strong>：
+​
+<img src="/img/20230329/1.png" alt="" title="首页的artifactId是mybatis-plus"></p>
+<p>首页的artifactId是mybatis-plus</p>
+<p><img src="/img/20230329/2.png" alt="" title="快速入门-&gt;安装的artifactId是mybatis-plus-boot-starter"></p>
+<p>快速入门-&gt;安装的artifactId是mybatis-plus-boot-starter</p>
+<p>我把artifactId改成mybatis-plus-boot-starter，即：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.baomidou<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>之后，就可以正常运行了（注意：<strong>一定要写版本号</strong>，不然会找不到依赖包）。测试一下接口：
+​
+<img src="/img/20230329/3.png" alt=""></p>
+<p>完美运行！</p>
+<h2 id="总结">总结<a href="#总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>这次眼瞎的经历告诉我：一定、一定、一定要仔细阅读官方文档！</p>
+<p>另外我很好奇mybatis-plus-boot-starter与mybatis-plus究竟有什么区别。官方首页跟文档里写得不一致，这不是完全坑小白吗TAT</p>
+<h2 id="其他原因">其他原因<a href="#其他原因" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>刚才有个小伙伴私信告诉我用了上述方法仍未解决，我才想起来MyBatis Plus目前不兼容Spring Boot 3.x。解决方法是用Spring Boot 2.x。我自己用的是2.7.2，JDK17。</p>
+<p>详情见：<a href="https://github.com/baomidou/mybatis-plus/issues/4971">https://github.com/baomidou/mybatis-plus/issues/4971</a></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://rc-kanashii.top/tags/%E5%90%8E%E7%AB%AF">后端</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1118 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2023-03-29 00:14</p>
+			</footer>
+		</article>
+		<aside id="toc" class="show-toc">
+			<div class="toc-title">Table of Contents</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#所用依赖包">所用依赖包</a></li>
+    <li><a href="#尝试解决">尝试解决</a></li>
+    <li><a href="#最终解决方法">最终解决方法</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#其他原因">其他原因</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://rc-kanashii.top/posts/%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%BA%86/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>换博客了</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+		<script src="https://utteranc.es/client.js" repo="RC-Kanashii/rc-kanashii.github.io" issue-term="title"
+			label="Comment" theme="github-light" crossorigin="anonymous" async>
+		</script>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2023 <a href="https://rc-kanashii.top">RC Kanashii</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://rc-kanashii.top/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://rc-kanashii.top/js/bundle.min.580988ed2982bcbb74a1773c7abea97b43e4c43b9324e10cda0813ec6ec4bb67.js" integrity="sha256-WAmI7SmCvLt0oXc8er6pe0PkxDuTJOEM2ggT7G7Eu2c=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

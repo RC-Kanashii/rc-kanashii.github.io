@@ -6,8 +6,132 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>zh-CN</language>
 		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-		<lastBuildDate>Thu, 16 Mar 2023 11:33:45 +0800</lastBuildDate>
+		<lastBuildDate>Wed, 29 Mar 2023 00:14:40 +0800</lastBuildDate>
 		<atom:link href="https://rc-kanashii.top/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required</title>
+			<link>https://rc-kanashii.top/posts/%E8%8F%9C%E9%B8%A1mybatis-plus%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
+			<pubDate>Wed, 29 Mar 2023 00:14:40 +0800</pubDate>
+			
+			<guid>https://rc-kanashii.top/posts/%E8%8F%9C%E9%B8%A1mybatis-plus%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</guid>
+			<description>前言 最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了官网首页的这一串依赖： &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.baomidou&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;mybatis-plus&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.5.2&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 然后简简单单弄个</description>
+			<content type="html"><![CDATA[<h2 id="前言">前言</h2>
+<p>最近在准备做个划水的毕设，打算用MyBatis Plus简化一下CRUD操作。我直接复制了<strong>官网首页</strong>的这一串依赖：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.baomidou<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis-plus<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>然后简简单单弄个User的entity：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Data</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@TableId</span><span class="o">(</span><span class="n">type</span> <span class="o">=</span> <span class="n">IdType</span><span class="o">.</span><span class="na">AUTO</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Long</span> <span class="n">id</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">username</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">password</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>弄个最简单的UserMapper：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserMapper</span> <span class="kd">extends</span> <span class="n">BaseMapper</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>再弄个简单到不行的LoginController：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RestController</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/login&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginController</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">UserMapper</span> <span class="n">userMapper</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@GetMapping</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">User</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="n">userMapper</span><span class="o">.</span><span class="na">selectById</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>结果一运行，报了一个之前从未见过的错误：</p>
+<pre tabindex="0"><code>org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;loginController&#39;: Unsatisfied dependency expressed through field &#39;userMapper&#39;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;userMapper&#39; defined in file [C:\JetBrainsProjects\IdeaProjects\springboot-vue-demo\target\classes\com\rc\springbootvuedemo\mapper\UserMapper.class]: Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:660) ~[spring-beans-5.3.24.jar:5.3.24]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:640) ~[spring-beans-5.3.24.jar:5.3.24]
+	...
+</code></pre><p>重点是这一句：</p>
+<pre tabindex="0"><code>Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required
+</code></pre><p>我就纳闷了，之前MyBatis Plus用得好好地，怎么今天突然就报错了？</p>
+<h2 id="所用依赖包">所用依赖包</h2>
+<p>我这个项目毕竟只是个demo，使用的依赖包并不多：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-devtools<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- MySQL --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-data-jpa<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>mysql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mysql-connector-java<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- MyBatis Plus --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.baomidou<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis-plus<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- Lombok --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.projectlombok<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>lombok<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>另外，根据官网文档的提示，我并没有额外引入MyBatis。</p>
+<blockquote>
+<p>注意：引入MyBatis-Plus之后请不要再次引入MyBatis以及MyBatis-Spring，以避免因版本差异导致的问题。</p>
+</blockquote>
+<h2 id="尝试解决">尝试解决</h2>
+<p>网上很多文章说原因是MyBatis Plus版本过高，但是降级对我而言没有作用。</p>
+<p>有的文章说是因为MyBatis Plus使用的是MybatisSqlSessionFactoryBean而非SqlSessionFactory，所以要自己配置前者，而且配置方法贼复杂。但是我印象里之前写项目的时候从来没有这么麻烦过，于是pass掉这个解决方法。</p>
+<h2 id="最终解决方法">最终解决方法</h2>
+<p>在网上浪费了2个小时之后，我又仔细阅读了一遍官方文档，结果发现<strong>官方首页</strong>和<strong>快速入门-&gt;安装</strong>中的依赖包<strong>不一致</strong>：
+​
+<img src="/img/20230329/1.png" alt="" title="首页的artifactId是mybatis-plus"></p>
+<p>首页的artifactId是mybatis-plus</p>
+<p><img src="/img/20230329/2.png" alt="" title="快速入门-&gt;安装的artifactId是mybatis-plus-boot-starter"></p>
+<p>快速入门-&gt;安装的artifactId是mybatis-plus-boot-starter</p>
+<p>我把artifactId改成mybatis-plus-boot-starter，即：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.baomidou<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>之后，就可以正常运行了（注意：<strong>一定要写版本号</strong>，不然会找不到依赖包）。测试一下接口：
+​
+<img src="/img/20230329/3.png" alt=""></p>
+<p>完美运行！</p>
+<h2 id="总结">总结</h2>
+<p>这次眼瞎的经历告诉我：一定、一定、一定要仔细阅读官方文档！</p>
+<p>另外我很好奇mybatis-plus-boot-starter与mybatis-plus究竟有什么区别。官方首页跟文档里写得不一致，这不是完全坑小白吗TAT</p>
+<h2 id="其他原因">其他原因</h2>
+<p>刚才有个小伙伴私信告诉我用了上述方法仍未解决，我才想起来MyBatis Plus目前不兼容Spring Boot 3.x。解决方法是用Spring Boot 2.x。我自己用的是2.7.2，JDK17。</p>
+<p>详情见：<a href="https://github.com/baomidou/mybatis-plus/issues/4971">https://github.com/baomidou/mybatis-plus/issues/4971</a></p>
+]]></content>
+		</item>
 		
 		<item>
 			<title>换博客了</title>
