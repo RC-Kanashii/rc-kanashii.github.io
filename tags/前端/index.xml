@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>前端 on RC Kanashii&#39;s Blog</title>
+    <link>https://rc-kanashii.top/tags/%E5%89%8D%E7%AB%AF/</link>
+    <description>Recent content in 前端 on RC Kanashii&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sat, 01 Apr 2023 00:16:32 +0800</lastBuildDate><atom:link href="https://rc-kanashii.top/tags/%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vue3&#43;Vite如何集成Mock.js</title>
+      <link>https://rc-kanashii.top/posts/vue3&#43;vite%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90mockjs/</link>
+      <pubDate>Sat, 01 Apr 2023 00:16:32 +0800</pubDate>
+      
+      <guid>https://rc-kanashii.top/posts/vue3&#43;vite%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90mockjs/</guid>
+      <description>首先安装Mock.js： npm i mockjs 然后在src下新建mock目录，再在该目录下新建index.js，写入以下代码： import Mock from &amp;#39;mockjs&amp;#39;; Mock.mock(&amp;#39;http://localhost:8080/admin/login&amp;#39;, &amp;#39;post&amp;#39;, { msg: &amp;#34;200 OK&amp;#34; }) mock</description>
+    </item>
+    
+  </channel>
+</rss>

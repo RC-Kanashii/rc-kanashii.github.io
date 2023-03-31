@@ -6,8 +6,36 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>zh-CN</language>
 		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-		<lastBuildDate>Wed, 29 Mar 2023 00:14:40 +0800</lastBuildDate>
+		<lastBuildDate>Sat, 01 Apr 2023 00:16:32 +0800</lastBuildDate>
 		<atom:link href="https://rc-kanashii.top/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Vue3&#43;Vite如何集成Mock.js</title>
+			<link>https://rc-kanashii.top/posts/vue3&#43;vite%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90mockjs/</link>
+			<pubDate>Sat, 01 Apr 2023 00:16:32 +0800</pubDate>
+			
+			<guid>https://rc-kanashii.top/posts/vue3&#43;vite%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90mockjs/</guid>
+			<description>首先安装Mock.js： npm i mockjs 然后在src下新建mock目录，再在该目录下新建index.js，写入以下代码： import Mock from &amp;#39;mockjs&amp;#39;; Mock.mock(&amp;#39;http://localhost:8080/admin/login&amp;#39;, &amp;#39;post&amp;#39;, { msg: &amp;#34;200 OK&amp;#34; }) mock</description>
+			<content type="html"><![CDATA[<p>首先安装<code>Mock.js</code>：</p>
+<pre tabindex="0"><code>npm i mockjs
+</code></pre><p>然后在<code>src</code>下新建<code>mock</code>目录，再在该目录下新建<code>index.js</code>，写入以下代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">Mock</span> <span class="nx">from</span> <span class="s1">&#39;mockjs&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Mock</span><span class="p">.</span><span class="nx">mock</span><span class="p">(</span><span class="s1">&#39;http://localhost:8080/admin/login&#39;</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">msg</span><span class="o">:</span> <span class="s2">&#34;200 OK&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></div><p><code>mock</code>的第一个参数是要拦截的URL。注意如果之前设置过<code>axios</code>的<code>baseURL</code>，那么此处要写出<strong>完整的</strong>URL（例如<code>http://localhost:8080/admin/login</code>）。如果没有设置过<code>baseURL</code>，可以直接简写成URL的后半部分（例如<code>/admin/login</code>）。</p>
+<p><code>mock</code>的第二个参数表示请求方式，如果省略，说明拦截该URL的所有类型的请求。</p>
+<p><code>mock</code>的第三个参数是要返回的数据，以<code>JSON</code>格式返回。</p>
+<p>然后在项目入口文件（即<code>main.js</code>）中导入<code>mock</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">import</span> <span class="s1">&#39;./mock&#39;</span><span class="p">;</span>
+</span></span></code></pre></div><p>最后在组件中正常使用<code>axios</code>发送请求即可：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/admin/login&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">resp</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">})</span>
+</span></span></code></pre></div>]]></content>
+		</item>
 		
 		<item>
 			<title>菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required</title>

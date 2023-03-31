@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 29 Mar 2023 00:14:40 +0800</lastBuildDate><atom:link href="https://rc-kanashii.top/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 Apr 2023 00:16:32 +0800</lastBuildDate><atom:link href="https://rc-kanashii.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vue3&#43;Vite如何集成Mock.js</title>
+      <link>https://rc-kanashii.top/posts/vue3&#43;vite%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90mockjs/</link>
+      <pubDate>Sat, 01 Apr 2023 00:16:32 +0800</pubDate>
+      
+      <guid>https://rc-kanashii.top/posts/vue3&#43;vite%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90mockjs/</guid>
+      <description>首先安装Mock.js： npm i mockjs 然后在src下新建mock目录，再在该目录下新建index.js，写入以下代码： import Mock from &amp;#39;mockjs&amp;#39;; Mock.mock(&amp;#39;http://localhost:8080/admin/login&amp;#39;, &amp;#39;post&amp;#39;, { msg: &amp;#34;200 OK&amp;#34; }) mock</description>
+    </item>
+    
     <item>
       <title>菜鸡MyBatis Plus踩坑记录：Property &#39;sqlSessionFactory&#39; or &#39;sqlSessionTemplate&#39; are required</title>
       <link>https://rc-kanashii.top/posts/%E8%8F%9C%E9%B8%A1mybatis-plus%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</link>
