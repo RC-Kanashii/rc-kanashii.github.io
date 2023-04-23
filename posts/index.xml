@@ -6,8 +6,87 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>zh-CN</language>
 		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-		<lastBuildDate>Sat, 01 Apr 2023 17:23:57 +0800</lastBuildDate>
+		<lastBuildDate>Fri, 21 Apr 2023 16:39:00 +0800</lastBuildDate>
 		<atom:link href="https://rc-kanashii.top/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>JavaScript如何获取一个64位整数的高32位和低32位</title>
+			<link>https://rc-kanashii.top/posts/javascript%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E4%B8%80%E4%B8%AA64%E4%BD%8D%E6%95%B4%E6%95%B0%E7%9A%84%E9%AB%9832%E4%BD%8D%E5%92%8C%E4%BD%8E32%E4%BD%8D/</link>
+			<pubDate>Fri, 21 Apr 2023 16:39:00 +0800</pubDate>
+			
+			<guid>https://rc-kanashii.top/posts/javascript%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E4%B8%80%E4%B8%AA64%E4%BD%8D%E6%95%B4%E6%95%B0%E7%9A%84%E9%AB%9832%E4%BD%8D%E5%92%8C%E4%BD%8E32%E4%BD%8D/</guid>
+			<description>背景 最近有个朋友问我如何在JavaScript中获取一个64位整数的高32位和低32位。由于我对JavaScript不是很了解，于是我打算先</description>
+			<content type="html"><![CDATA[<h2 id="背景">背景</h2>
+<p>最近有个朋友问我如何在JavaScript中获取一个64位整数的高32位和低32位。由于我对JavaScript不是很了解，于是我打算先用C++写一遍，再移植到JavaScript，心想这不是分分钟搞定：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">12345678901234</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="n">low</span> <span class="o">=</span> <span class="n">num</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="n">high</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;low = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">low</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;high = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">high</span><span class="p">;</span>
+</span></span></code></pre></div><p>输出结果是：</p>
+<pre tabindex="0"><code>low = 2249056121
+high = 28744
+</code></pre><p>我用进制转换器验证了一下，答案是正确的，于是赶紧用JavaScript重写一遍：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">12345678901234</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">low</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">high</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`low = </span><span class="si">${</span><span class="nx">low</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`high = </span><span class="si">${</span><span class="nx">high</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+</span></span></code></pre></div><p>输出结果是：</p>
+<pre tabindex="0"><code>low = -2045911175
+high = -2045911175
+</code></pre><p>这就很奇怪了，高32位和低32位怎么可能是一样的，而且怎么可能是负数？</p>
+<h2 id="涉及到的问题">涉及到的问题</h2>
+<h3 id="number精度"><code>Number</code>精度</h3>
+<p>JavaScript常用的表示数字的类型<code>Number</code>，本质上是<strong>双精度浮点数</strong>，类似C/C++和Java等语言中的<code>double</code>。<a href="https://zh.wikipedia.org/wiki/%E9%9B%99%E7%B2%BE%E5%BA%A6%E6%B5%AE%E9%BB%9E%E6%95%B8">双精度浮点数的编码规则</a>大致如下：</p>
+<p><img src="/img/20230421/1.png" alt="" title="双精度浮点数的编码规则"></p>
+<p>可以看到只有52的bit是用来表示尾数的，注意到尾数的最前面还有一个隐藏的1bit表示小数点前面的1，因此JavaScript的<strong>最大安全整数</strong>是<code>2^53 - 1</code>，具体解析可以查看<a href="https://juejin.cn/post/6880143057930190855">这篇回答</a>。</p>
+<p>由此可知JavaScript的<code>Number</code>类型虽然有64位，但是真正用来表示尾数的部分只有52位，因此无法真正地实现其他语言（如C/C++和Java）的<code>long</code>类型，除非使用字符串、数组或者<code>BigInt</code>（当然这是另外的话题，本文章不会涉及）。</p>
+<h3 id="位运算符的陷阱">位运算符的陷阱</h3>
+<p>在JavaScript中，虽然<code>Number</code>类型是64位，但是当进行位运算（如<code>&amp;</code>、<code>|</code>、<code>&lt;&lt;</code>、<code>&gt;&gt;</code>等）时，左右操作数首先会被<strong>强制转换为32位整数</strong>，这意味着超过32位的高位部分将会直接被截断。这在<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift#description">此处</a>和<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number#fixed-width_number_conversion">此处</a>有被提及：</p>
+<blockquote>
+<p>It first coerces both operands to numeric values and tests the types of them. It performs BigInt right shift if both operands becomes BigInts; otherwise, it converts both operands to 32-bit integers and performs number right shift.</p>
+</blockquote>
+<blockquote>
+<p>Bitwise operators always convert the operands to 32-bit integers.</p>
+</blockquote>
+<p>这意味着如果要获取一个数的高32位，不能直接使用位运算符，例如：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">high</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span>
+</span></span></code></pre></div><p>而应该先做除法，再做位运算：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">high</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span>
+</span></span></code></pre></div><h3 id="位移运算符的陷阱">位移运算符的陷阱</h3>
+<p>不同于C++只有左移运算符<code>&lt;&lt;</code>、右移运算符<code>&gt;&gt;</code>，JavaScript中还有无符号右移运算符<code>&gt;&gt;&gt;</code>。其中JavaScript的<code>&gt;&gt;</code>表示算术右移，即带有符号位的右移，而<code>&gt;&gt;&gt;</code>表示逻辑右移，即最高位不论正负数永远补0。</p>
+<p>不过JavaScript的无符号右移运算符<code>&gt;&gt;&gt;</code>还有一种巧妙的用法，这将在稍后揭晓。</p>
+<p>但是位移运算符也是一种位运算符，由上一小节可知它也会存在强制转换为32位整数的问题。另外，所有位移运算符的右操作数在转换之后还会<strong>对32取模</strong>，因此<code>100 &gt;&gt;&gt; 32</code>等价于<code>100 &gt;&gt;&gt; 0</code>，<code>100 &gt;&gt;&gt; 33</code>等价于<code>100 &gt;&gt;&gt; 1</code>。这也解释了前文<code>low</code>等于<code>high</code>的原因。</p>
+<blockquote>
+<p>The right operand will be converted to an unsigned 32-bit integer and then taken modulo 32, so the actual shift offset will always be a positive integer between 0 and 31, inclusive.</p>
+</blockquote>
+<h3 id="unsigned类型"><code>unsigned</code>类型</h3>
+<p>JavaScript是没有原生的<code>unsigned</code>类型的，但是注意到<code>MDN</code>对于无符号右移运算符描述的其中一句：</p>
+<blockquote>
+<p>This operation is also called &ldquo;zero-filling right shift&rdquo;, because the sign bit becomes 0, so the resulting number is always positive.</p>
+</blockquote>
+<p>可知无符号右移运算符的结果永远是一个正数（准确来说是非负整数）。因此可以用下面的操作来获得无符号整数：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">x</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+</span></span></code></pre></div><p>具体内容也可以看<a href="https://stackoverflow.com/questions/1822350/what-is-the-javascript-operator-and-how-do-you-use-it">这篇回答</a>。</p>
+<h2 id="解决方法">解决方法</h2>
+<p>在JavaScript中，对于一个不超过<code>2^53 - 1</code>的64位非负整数，可以用以下简洁方法获取它的高32位和低32位：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">12345678901234</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">low</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">high</span> <span class="o">=</span> <span class="p">((</span><span class="nx">x</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`low = </span><span class="si">${</span><span class="nx">low</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`high = </span><span class="si">${</span><span class="nx">high</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+</span></span></code></pre></div><p>如果超过了<code>2^53 - 1</code>，建议使用字符串、数组或者<code>BigInt</code>来解决。受限于篇幅，本文不会考虑给出其他解决方案（其实是懒hhhhhhh）</p>
+<h2 id="总结">总结</h2>
+<ul>
+<li>JavaScript的<code>Number</code>类型本质上是双精度浮点数，它的最大安全整数是<code>2^53 - 1</code></li>
+<li>JavaScript进行位运算时会将操作数强制转换为32位整数，超出的部分会被截断</li>
+<li>JavaScript有三种位移运算符，分别是左移运算符<code>&lt;&lt;</code>、右移运算符<code>&gt;&gt;</code>和无符号右移运算符<code>&gt;&gt;&gt;</code></li>
+<li>JavaScript在进行移位运算时，会先把右操作数对32取模</li>
+<li>JavaScript的无符号右移运算符<code>&gt;&gt;&gt;</code>的结果一定是一个非负整数</li>
+</ul>
+<p>嗐，JavaScript玩得真花，我到现在都还是很想吐槽JavaScript的某些一言难尽的设计，哪怕出了ES6也还是X上雕花（JS党勿喷&gt;w&lt;）</p>
+]]></content>
+		</item>
 		
 		<item>
 			<title>记录使用Clash for Windows时遇到Windows网络代理自动关闭的问题</title>
